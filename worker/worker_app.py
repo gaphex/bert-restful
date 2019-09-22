@@ -5,8 +5,8 @@ import logging
 from flask import Flask, request
 from flask_json import FlaskJSON, JsonError, as_json
 
-import bert_config
-from bert_feature_extractor import BERTFeatureExtractor
+import worker_config
+from worker.bert_feature_extractor import BERTFeatureExtractor
 
 
 def create_app():
@@ -17,11 +17,11 @@ def create_app():
     pid = os.getpid()
 
     extractor = BERTFeatureExtractor(
-        bert_config.graph_path,
-        bert_config.vocab_path,
-        use_gpu=bert_config.use_gpu,
-        batch_size=bert_config.batch_size,
-        seq_len=bert_config.seq_len)
+        worker_config.graph_path,
+        worker_config.vocab_path,
+        use_gpu=worker_config.use_gpu,
+        batch_size=worker_config.batch_size,
+        seq_len=worker_config.seq_len)
 
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
@@ -37,9 +37,8 @@ def create_app():
         try:
             logger.info('new request from {} to {}'.format(request.remote_addr, pid))
             encoded = extractor(data['texts']).tolist()
-            return {'id': data.get("id", 0),
-                    'result': encoded,
-                    'is_tokenized': data.get("is_tokenized", False)}
+            payload = {'result': encoded}
+            return payload
 
         except Exception as e:
             logger.error('error when handling HTTP request', exc_info=True)

@@ -1,4 +1,4 @@
-from worker import app
+from worker.worker_app import app
 
 if __name__ == "__main__":
     app.run()

@@ -365,11 +365,11 @@ def convert_lst_to_features(lst_str, max_seq_length, max_position_embeddings,
         # `type=1` were learned during pre-training and are added to the wordpiece
         # embedding vector (and position vector). This is not *strictly* necessary
         # since the [SEP] token unambiguously separates the sequences, but it makes
-        # it easier for the model to learn the concept of sequences.
+        # it easier for the worker to learn the concept of sequences.
         #
         # For classification tasks, the first vector (corresponding to [CLS]) is
         # used as as the "sentence vector". Note that this only makes sense because
-        # the entire model is fine-tuned.
+        # the entire worker is fine-tuned.
         tokens = ['[CLS]'] + tokens_a + ['[SEP]']
         input_type_ids = [0] * len(tokens)
         input_mask = [int(not mask_cls_sep)] + [1] * len(tokens_a) + [int(not mask_cls_sep)]
